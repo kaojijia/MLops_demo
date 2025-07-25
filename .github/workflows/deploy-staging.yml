@@ -4,32 +4,53 @@ on:
   push:
     branches: [main]
 
+# jobs:
+#   deploy-stage:
+#     runs-on: ARM64
+#     # 使用 container 关键字，让所有步骤都在这个容器里运行
+#     container:
+#       image: databricksfieldeng/mlopsstack:latest
+#       # 登录 Docker Hub 需要的凭证
+#       credentials:
+#         username: ${{ secrets.DOCKERHUB_USERNAME }}
+#         password: ${{ secrets.DOCKERHUB_TOKEN }}
+#     environment: stage
+#     env:
+#       DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
+#       DATABRICKS_TOKEN: ${{ vars.DATABRICKS_TOKEN }}
+#     steps:
+#       # 1. 先检出代码，代码会自动挂载到容器的 /github/workspace 目录
+#       - uses: actions/checkout@v4
+
+#       # 2. 直接在容器内运行命令
+#       - name: Deploy to Staging
+#         run: |
+#           cd my_mlops_project
+#           databricks bundle validate -t staging
+#           databricks bundle deploy -t staging
+#         # 指定工作目录，这样就不用 cd my_mlops_project
+#         # working-directory: ./my_mlops_project
+#         timeout-minutes: 30
+
+
 jobs:
   deploy-stage:
-    runs-on: ARM64
-    # 使用 container 关键字，让所有步骤都在这个容器里运行
-    container:
-      image: databricksfieldeng/mlopsstack:latest
-       # 添加 platform 选项来指定架构
-      options: --platform linux/amd64
-      # 登录 Docker Hub 需要的凭证
-      credentials:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    runs-on: self-hosted
     environment: stage
     env:
       DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
       DATABRICKS_TOKEN: ${{ vars.DATABRICKS_TOKEN }}
     steps:
-      # 1. 先检出代码，代码会自动挂载到容器的 /github/workspace 目录
       - uses: actions/checkout@v4
-
-      # 2. 直接在容器内运行命令
-      - name: Deploy to Staging
+      - name: Docker 登录
         run: |
-          cd my_mlops_project
-          databricks bundle validate -t staging
-          databricks bundle deploy -t staging
-        # 指定工作目录，这样就不用 cd my_mlops_project
-        # working-directory: ./my_mlops_project
+          echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+      - name: Deploy to Staging (in container)
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}/my_mlops_project:/workspace \
+            -e DATABRICKS_HOST \
+            -e DATABRICKS_TOKEN \
+            databricksfieldeng/mlopsstack:latest \
+            bash -c "cd /workspace && databricks bundle validate -t staging && databricks bundle deploy -t staging"
         timeout-minutes: 30
