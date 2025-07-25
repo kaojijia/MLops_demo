@@ -1,4 +1,4 @@
-image: registry.cn-hangzhou.aliyuncs.com/databricks-mlops/mlopsstacks:latest
+image: databricksfieldeng/mlopsstacks:latest
 
 unit-test:
   stage: test
@@ -7,6 +7,11 @@ unit-test:
     - pip --version
     - java -version
     - pytest --junitxml=test-unit.xml
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
   rules:
     - when: on_success # mandatory to ensure this job can be called by parent cicd on merge request
 
@@ -17,6 +22,11 @@ integration-test:
   variables:
     DATABRICKS_HOST: "${DATABRICKS_HOST}"
     DATABRICKS_TOKEN: "${DATABRICKS_TOKEN}"
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
   script:
     - cd my_mlops_project
     - databricks bundle validate -t test
