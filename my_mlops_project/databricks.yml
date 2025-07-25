@@ -11,7 +11,7 @@ variables:
     default: /Users/${workspace.current_user.userName}/${bundle.target}-my_mlops_project-experiment
   model_name:
     description: Model name for the model training.
-    default: my_mlops_project-model
+    default: miketest
   catalog_name:
     description: The catalog name to save the trained model
     
