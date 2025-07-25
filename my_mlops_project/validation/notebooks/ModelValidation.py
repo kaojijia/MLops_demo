@@ -74,7 +74,7 @@ dbutils.widgets.text("targets", "fare_amount", "Targets")
 dbutils.widgets.text("custom_metrics_loader_function", "custom_metrics", "Custom Metrics Loader Function")
 dbutils.widgets.text("validation_thresholds_loader_function", "validation_thresholds", "Validation Thresholds Loader Function")
 dbutils.widgets.text("evaluator_config_loader_function", "evaluator_config", "Evaluator Config Loader Function")
-dbutils.widgets.text("model_name", "dev.model.my_mlops_project-model", "Full (Three-Level) Model Name")
+dbutils.widgets.text("model_name", "mikedata.model.miketest", "Full (Three-Level) Model Name")
 dbutils.widgets.text("model_version", "", "Candidate Model Version")
 
 # COMMAND ----------
