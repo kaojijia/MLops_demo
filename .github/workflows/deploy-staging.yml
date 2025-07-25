@@ -3,7 +3,8 @@ name: Deploy to Staging
 on:
   push:
     branches: [main]
-    # 暂时移除paths限制，确保任何推送都会触发
+    paths:
+      - 'my_mlops_project/**'
 
 jobs:
   deploy-staging:

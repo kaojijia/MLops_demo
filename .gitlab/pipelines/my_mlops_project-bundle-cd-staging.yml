@@ -1,4 +1,4 @@
-image: databricksfieldeng/mlopsstacks:latest
+image: databricksruntime/standard:13.3-LTS
 
 deploy-stage:
   stage: deploy
@@ -6,6 +6,8 @@ deploy-stage:
   variables:
     DATABRICKS_HOST: "${DATABRICKS_HOST}"
     DATABRICKS_TOKEN: "${DATABRICKS_TOKEN}"
+  before_script:
+    - curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
   script:
     - cd my_mlops_project
     - databricks bundle validate -t staging

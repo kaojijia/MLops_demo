@@ -3,9 +3,12 @@ name: CI Tests
 on:
   pull_request:
     branches: [main]
+    paths:
+      - 'my_mlops_project/**'
   push:
     branches: [main]
-    # 暂时移除paths限制，确保任何推送都会触发
+    paths:
+      - 'my_mlops_project/**'
 
 jobs:
   unit-test:
