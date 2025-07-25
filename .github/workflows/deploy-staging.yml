@@ -32,23 +32,21 @@ on:
 jobs:
   deploy-stage:
     runs-on: ubuntu-latest
-    container:
-      image: databricksfieldeng/mlopsstacks:latest
-      options: >-
-        -v /home/runner/.docker:/root/.docker
     environment: stage
     env:
       DATABRICKS_HOST: "${DATABRICKS_HOST}"
       DATABRICKS_TOKEN: "${DATABRICKS_TOKEN}"
     steps:
-      - name: 配置 Docker 认证
+      - name: Docker 登录
         run: |
-          mkdir -p /home/runner/.docker
-          echo '${DOCKER_AUTH_CONFIG}' > /home/runner/.docker/config.json
+          echo '${DOCKER_AUTH_CONFIG}' > ~/.docker/config.json
       - uses: actions/checkout@v4
-      - name: Deploy to Staging
+      - name: 在认证后的容器中运行命令
         run: |
-          cd my_mlops_project
-          databricks bundle validate -t staging
-          databricks bundle deploy -t staging
+          docker run --rm \
+            -v ${{ github.workspace }}/my_mlops_project:/workspace \
+            -e DATABRICKS_HOST="${DATABRICKS_HOST}" \
+            -e DATABRICKS_TOKEN="${DATABRICKS_TOKEN}" \
+            databricksfieldeng/mlopsstacks:latest \
+            bash -c "cd /workspace && databricks bundle validate -t staging && databricks bundle deploy -t staging"
         timeout-minutes: 30
