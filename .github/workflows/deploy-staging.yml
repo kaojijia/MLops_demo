@@ -10,8 +10,6 @@ jobs:
     # 使用 container 关键字，让所有步骤都在这个容器里运行
     container:
       image: databricksfieldeng/mlopsstack:latest
-       # 添加 platform 选项来指定架构
-      options: --platform linux/amd64
       # 登录 Docker Hub 需要的凭证
       credentials:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
