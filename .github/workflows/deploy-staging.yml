@@ -50,6 +50,6 @@ jobs:
             -v ${{ github.workspace }}/my_mlops_project:/workspace \
             -e DATABRICKS_HOST \
             -e DATABRICKS_TOKEN \
-            databricksfieldeng/mlopsstacks:latest \
+            databricksfieldeng/mlopsstack:latest \
             bash -c "cd /workspace && databricks bundle validate -t staging && databricks bundle deploy -t staging"
         timeout-minutes: 30
