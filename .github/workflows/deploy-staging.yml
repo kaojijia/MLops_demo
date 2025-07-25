@@ -34,19 +34,22 @@ jobs:
     runs-on: ubuntu-latest
     environment: stage
     env:
-      DATABRICKS_HOST: "${DATABRICKS_HOST}"
-      DATABRICKS_TOKEN: "${DATABRICKS_TOKEN}"
+      # 使用 vars 上下文来引用环境级别的变量
+      DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ vars.DATABRICKS_TOKEN }}
     steps:
-      - name: Docker 登录
+      - name: 配置 Docker 认证
         run: |
-          echo '${DOCKER_AUTH_CONFIG}' > ~/.docker/config.json
+          mkdir -p ~/.docker
+          # 使用双引号和 secrets 上下文来正确写入认证文件
+          echo "${{ secrets.DOCKER_AUTH_CONFIG }}" > ~/.docker/config.json
       - uses: actions/checkout@v4
       - name: 在认证后的容器中运行命令
         run: |
           docker run --rm \
             -v ${{ github.workspace }}/my_mlops_project:/workspace \
-            -e DATABRICKS_HOST="${DATABRICKS_HOST}" \
-            -e DATABRICKS_TOKEN="${DATABRICKS_TOKEN}" \
+            -e DATABRICKS_HOST \
+            -e DATABRICKS_TOKEN \
             databricksfieldeng/mlopsstacks:latest \
             bash -c "cd /workspace && databricks bundle validate -t staging && databricks bundle deploy -t staging"
         timeout-minutes: 30
