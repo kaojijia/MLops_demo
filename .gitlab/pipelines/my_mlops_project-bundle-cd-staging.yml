@@ -7,7 +7,7 @@ deploy-stage:
     DATABRICKS_HOST: "${DATABRICKS_HOST}"
     DATABRICKS_TOKEN: "${DATABRICKS_TOKEN}"
   before_script:
-    - curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+    - apt-get install -y databricks-cli
   script:
     - cd my_mlops_project
     - databricks bundle validate -t staging
