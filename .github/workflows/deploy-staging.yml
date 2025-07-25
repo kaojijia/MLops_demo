@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy-stage:
-    runs-on: ubuntu-latest
+    runs-on: ARM64
     # 使用 container 关键字，让所有步骤都在这个容器里运行
     container:
       image: databricksfieldeng/mlopsstack:latest
