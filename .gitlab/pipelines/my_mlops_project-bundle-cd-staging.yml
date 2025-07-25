@@ -1,4 +1,4 @@
-image: databricksfieldeng/mlopsstacks:latest
+image: registry.cn-hangzhou.aliyuncs.com/databricks-mlops/mlopsstacks:latest
 
 deploy-stage:
   stage: deploy
