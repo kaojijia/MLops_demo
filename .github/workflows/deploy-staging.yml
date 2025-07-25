@@ -3,18 +3,17 @@ name: Deploy to Staging
 on:
   push:
     branches: [main]
-    paths:
-      - 'my_mlops_project/**'
+    # 移除路径限制，确保任何推送到main都会触发
 
 jobs:
-  deploy-staging:
+  deploy-stage:
     runs-on: ubuntu-latest
     container:
       image: databricksfieldeng/mlopsstacks:latest
-    environment: staging
+    environment: stage
     env:
-      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      DATABRICKS_HOST: "${DATABRICKS_HOST}"
+      DATABRICKS_TOKEN: "${DATABRICKS_TOKEN}"
     steps:
       - uses: actions/checkout@v4
       - name: Deploy to Staging
