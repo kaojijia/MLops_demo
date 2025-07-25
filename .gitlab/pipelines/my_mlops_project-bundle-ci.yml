@@ -7,11 +7,6 @@ unit-test:
     - pip --version
     - java -version
     - pytest --junitxml=test-unit.xml
-  retry:
-    max: 2
-    when:
-      - runner_system_failure
-      - stuck_or_timeout_failure
   rules:
     - when: on_success # mandatory to ensure this job can be called by parent cicd on merge request
 

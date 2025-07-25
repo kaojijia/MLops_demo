@@ -1,0 +1,46 @@
+name: CI Tests
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'my_mlops_project/**'
+  push:
+    branches: [main]
+    paths:
+      - 'my_mlops_project/**'
+
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    container:
+      image: databricksfieldeng/mlopsstacks:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run unit tests
+        run: |
+          python3 --version
+          pip --version
+          java -version
+          pytest --junitxml=test-unit.xml
+
+  integration-test:
+    runs-on: ubuntu-latest
+    container:
+      image: databricksfieldeng/mlopsstacks:latest
+    needs: unit-test
+    environment: dev
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run integration tests
+        run: |
+          cd my_mlops_project
+          databricks bundle validate -t test
+          databricks bundle deploy -t test
+          databricks bundle run write_feature_table_job -t test
+          databricks bundle run model_training_job -t test
+        continue-on-error: false
+        timeout-minutes: 30

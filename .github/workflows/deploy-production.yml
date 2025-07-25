@@ -1,0 +1,25 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [release]
+    paths:
+      - 'my_mlops_project/**'
+
+jobs:
+  deploy-production:
+    runs-on: ubuntu-latest
+    container:
+      image: databricksfieldeng/mlopsstacks:latest
+    environment: production
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Production
+        run: |
+          cd my_mlops_project
+          databricks bundle validate -t prod
+          databricks bundle deploy -t prod
+        timeout-minutes: 30

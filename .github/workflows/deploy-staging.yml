@@ -1,0 +1,25 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'my_mlops_project/**'
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    container:
+      image: databricksfieldeng/mlopsstacks:latest
+    environment: staging
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Staging
+        run: |
+          cd my_mlops_project
+          databricks bundle validate -t staging
+          databricks bundle deploy -t staging
+        timeout-minutes: 30

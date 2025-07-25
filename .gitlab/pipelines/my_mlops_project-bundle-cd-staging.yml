@@ -6,11 +6,6 @@ deploy-stage:
   variables:
     DATABRICKS_HOST: "${DATABRICKS_HOST}"
     DATABRICKS_TOKEN: "${DATABRICKS_TOKEN}"
-  retry:
-    max: 2
-    when:
-      - runner_system_failure
-      - stuck_or_timeout_failure
   script:
     - cd my_mlops_project
     - databricks bundle validate -t staging
