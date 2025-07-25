@@ -1,4 +1,4 @@
-image: databricksruntime/standard:13.3-LTS
+image: databricksfieldeng/mlopsstacks:latest
 
 deploy-stage:
   stage: deploy
