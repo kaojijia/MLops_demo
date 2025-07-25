@@ -148,6 +148,9 @@ mlflow.lightgbm.log_model(
     registered_model_name=model_name
 )
 
+print(f"Model {model_name} logged successfully.")
+
+
 # The returned model URI is needed by the model deployment notebook.
 model_version = get_latest_model_version(model_name)
 model_uri = f"models:/{model_name}/{model_version}"
@@ -155,3 +158,5 @@ dbutils.jobs.taskValues.set("model_uri", model_uri)
 dbutils.jobs.taskValues.set("model_name", model_name)
 dbutils.jobs.taskValues.set("model_version", model_version)
 dbutils.notebook.exit(model_uri)
+
+
