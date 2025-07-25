@@ -8,16 +8,15 @@ unit-test:
     - java -version
     - pytest --junitxml=test-unit.xml
   rules:
-    - when: on_success # mandatory to ensure this job can be called by parent cicd on merge request
+    - when: on_success # mandatory to ensure this job can be called by parent cicd on merge request
 
 integration-test:
   stage: test
   environment: dev
   #need: unit-test
   variables:
-    DATABRICKS_HOST: https://your-staging-workspace.cloud.databricks.com
-    DATABRICKS_CLIENT_ID: "${SP_CLIENT_ID}"
-    DATABRICKS_CLIENT_SECRET: "${SP_CLIENT_SECRET}"
+    DATABRICKS_HOST: "${DATABRICKS_HOST}"
+    DATABRICKS_TOKEN: "${DATABRICKS_TOKEN}"
   script:
     - cd my_mlops_project
     - databricks bundle validate -t test
@@ -25,4 +24,4 @@ integration-test:
     - databricks bundle run write_feature_table_job -t test
     - databricks bundle run model_training_job -t test
   rules:
-    - when: on_success # mandatory to ensure this job can be called by parent cicd on merge request
+    - when: on_success # mandatory to ensure this job can be called by parent cicd on merge request
